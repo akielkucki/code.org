@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Genre Shuffle - IntelliJ Dark Theme</title>
+    <style>
+        /* IntelliJ-inspired Dark Theme */
+        :root {
+            --bg-primary: #1e1f22;
+            --bg-secondary: #2b2d30;
+            --bg-tertiary: #1c1e1f;
+            --text-primary: #d9dce0;
+            --text-secondary: #9da0a8;
+            --accent-color: #1DB954; /* Spotify Green */
+            --line-highlight: #2a2e33;
+            --selection: #2d5177;
+            --keyword: #cf8e6d;
+            --string: #6aab73;
+            --number: #6897bb;
+            --comment: #7a7e85;
+            --function: #ffc66d;
+            --operator: #babed8;
+            --variable: #9876aa;
+            --property: #d0d0ff;
+            --method: #ffc66d;
+        }
+        
+        body {
+            font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', Consolas, monospace;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        .header {
+            background-color: var(--bg-secondary);
+            padding: 10px 15px;
+            border-bottom: 1px solid #3c3f41;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .file-name {
+            color: var(--text-primary);
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .file-path {
+            color: var(--text-secondary);
+            font-size: 12px;
+            margin-left: 8px;
+        }
+        
+        .editor-wrapper {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .line-numbers {
+            background-color: var(--bg-tertiary);
+            padding: 10px 0;
+            text-align: right;
+            padding-right: 10px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            min-width: 40px;
+            user-select: none;
+        }
+        
+        .code-container {
+            flex: 1;
+            padding: 10px 0;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        pre {
+            margin: 0;
+            font-family: inherit;
+            tab-size: 4;
+        }
+        
+        code {
+            display: block;
+            padding: 0 15px;
+            font-size: 13px;
+        }
+        
+        /* Syntax highlighting */
+        .comment {
+            color: var(--comment);
+            font-style: italic;
+        }
+        
+        .keyword {
+            color: var(--keyword);
+            font-weight: bold;
+        }
+        
+        .string {
+            color: var(--string);
+        }
+        
+        .number {
+            color: var(--number);
+        }
+        
+        .function {
+            color: var(--function);
+        }
+        
+        .variable {
+            color: var(--variable);
+        }
+        
+        .property {
+            color: var(--property);
+        }
+        
+        .method {
+            color: var(--method);
+        }
+        
+        .operator {
+            color: var(--operator);
+        }
+        
+        /* Line highlight */
+        .line:hover {
+            background-color: var(--line-highlight);
+        }
+        
+        /* Status bar */
+        .status-bar {
+            background-color: var(--bg-secondary);
+            border-top: 1px solid #3c3f41;
+            padding: 3px 10px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .status-item {
+            margin-right: 15px;
+        }
+        
+        /* Spotify UI Preview */
+        .spotify-preview {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #121212;
+            border-radius: 8px;
+            border: 1px solid #333;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+        
+        .spotify-header {
+            background-color: #1DB954;
+            padding: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            border-radius: 4px 4px 0 0;
+            color: black;
+        }
+        
+        .spotify-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            margin-top: 10px;
+        }
+        
+        .spotify-dropdown {
+            padding: 8px 15px;
+            font-size: 16px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .spotify-button {
+            background-color: #1DB954;
+            color: black;
+            margin-left: 10px;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .spotify-reset {
+            padding: 8px 15px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .tracks-container {
+            margin-top: 15px;
+            padding: 15px;
+            height: 200px;
+            background-color: #181818;
+            border-radius: 0 0 5px 5px;
+            overflow-y: auto;
+        }
+        
+        .track {
+            padding: 10px;
+            border-bottom: 1px solid #222;
+        }
+        
+        .track:nth-child(odd) {
+            background-color: #121212;
+        }
+        
+        .track-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+        }
+        
+        .track-info {
+            font-size: 12px;
+            color: #787878;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <span class="file-name">spotify-genre-shuffle.js</span>
+                <span class="file-path">~/projects/spotify-app/src/</span>
+            </div>
+            <div style="display: flex; align-items: center;">
+                <span style="margin-right: 15px; font-size: 12px;">JavaScript</span>
+                <span style="margin-right: 15px; font-size: 12px;">UTF-8</span>
+            </div>
+        </div>
+        
+        <div class="editor-wrapper">
+            <div class="line-numbers">
+                <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div>
+                <div>7</div><div>8</div><div>9</div><div>10</div><div>11</div><div>12</div>
+                <div>13</div><div>14</div><div>15</div><div>16</div><div>17</div><div>18</div>
+                <div>19</div><div>20</div><div>21</div><div>22</div><div>23</div><div>24</div>
+                <div>25</div><div>26</div><div>27</div><div>28</div><div>29</div><div>30</div>
+                <div>31</div><div>32</div><div>33</div><div>34</div><div>35</div><div>36</div>
+                <div>37</div><div>38</div><div>39</div><div>40</div><div>41</div><div>42</div>
+                <div>43</div><div>44</div><div>45</div><div>46</div><div>47</div><div>48</div>
+                <div>49</div><div>50</div><div>51</div><div>52</div><div>53</div><div>54</div>
+                <div>55</div><div>56</div><div>57</div><div>58</div><div>59</div><div>60</div>
+                <div>61</div><div>62</div><div>63</div><div>64</div><div>65</div><div>66</div>
+                <div>67</div><div>68</div><div>69</div><div>70</div><div>71</div><div>72</div>
+                <div>73</div><div>74</div><div>75</div><div>76</div><div>77</div><div>78</div>
+                <div>79</div><div>80</div><div>81</div><div>82</div><div>83</div><div>84</div>
+                <div>85</div><div>86</div><div>87</div><div>88</div><div>89</div><div>90</div>
+                <div>91</div><div>92</div><div>93</div><div>94</div><div>95</div><div>96</div>
+                <div>97</div><div>98</div><div>99</div><div>100</div><div>101</div><div>102</div>
+                <div>103</div><div>104</div><div>105</div><div>106</div><div>107</div><div>108</div>
+                <div>109</div><div>110</div><div>111</div><div>112</div><div>113</div><div>114</div>
+                <div>115</div><div>116</div><div>117</div><div>118</div><div>119</div><div>120</div>
+                <div>121</div><div>122</div><div>123</div><div>124</div><div>125</div><div>126</div>
+                <div>127</div><div>128</div><div>129</div><div>130</div><div>131</div><div>132</div>
+                <div>133</div><div>134</div><div>135</div><div>136</div><div>137</div><div>138</div>
+                <div>139</div><div>140</div><div>141</div><div>142</div><div>143</div>
+            </div>
+            
+            <div class="code-container">
+                <pre><code>
+<span class="comment">// Get Data</span>
+<span class="keyword">var</span> <span class="variable">ids</span> = <span class="function">getColumn</span>(<span class="string">"Top 50 USA"</span>, <span class="string">"id"</span>);
+<span class="keyword">var</span> <span class="variable">positions</span> = <span class="function">getColumn</span>(<span class="string">"Top 50 USA"</span>, <span class="string">"Position"</span>);
+<span class="keyword">var</span> <span class="variable">trackNames</span> = <span class="function">getColumn</span>(<span class="string">"Top 50 USA"</span>, <span class="string">"track_names"</span>);
+<span class="keyword">var</span> <span class="variable">artists</span> = <span class="function">getColumn</span>(<span class="string">"Top 50 USA"</span>, <span class="string">"artist"</span>);
+<span class="keyword">var</span> <span class="variable">trackGenres</span> = <span class="function">getColumn</span>(<span class="string">"Top 50 USA"</span>, <span class="string">"Genre"</span>);
+
+<span class="keyword">var</span> <span class="variable">tracks</span> = [];
+<span class="keyword">var</span> <span class="variable">genres</span> = [];
+<span class="keyword">var</span> <span class="variable">currentTracks</span> = [];
+
+<span class="comment">// Build Track Objects and Genre List using arrays - Help from Max's friend, he understood pushing</span>
+<span class="keyword">for</span> (<span class="keyword">var</span> <span class="variable">i</span> = <span class="number">0</span>; <span class="variable">i</span> < <span class="variable">trackNames</span>.<span class="property">length</span>; <span class="variable">i</span>++) {
+  <span class="variable">tracks</span>.<span class="method">push</span>({
+    <span class="property">id</span>: <span class="variable">ids</span>[<span class="variable">i</span>],
+    <span class="property">position</span>: <span class="variable">positions</span>[<span class="variable">i</span>],
+    <span class="property">trackName</span>: <span class="variable">trackNames</span>[<span class="variable">i</span>],
+    <span class="property">artist</span>: <span class="variable">artists</span>[<span class="variable">i</span>],
+    <span class="property">genre</span>: <span class="variable">trackGenres</span>[<span class="variable">i</span>]
+  });
+  <span class="keyword">if</span> (<span class="variable">genres</span>.<span class="method">indexOf</span>(<span class="variable">trackGenres</span>[<span class="variable">i</span>]) === <span class="number">-1</span>) {
+    <span class="variable">genres</span>.<span class="method">push</span>(<span class="variable">trackGenres</span>[<span class="variable">i</span>]);
+  }
+}
+
+<span class="keyword">if</span> (<span class="variable">genres</span>.<span class="property">length</span> === <span class="number">0</span>) {
+  <span class="variable">genres</span> = [<span class="string">"Pop"</span>, 
+            <span class="string">"Hip Hop"</span>, 
+            <span class="string">"Indie"</span>, 
+            <span class="string">"R&B"</span>, 
+            <span class="string">"Dance/Electronic"</span>, 
+            <span class="string">"Latin"</span>, 
+            <span class="string">"Rock"</span>];
+}
+
+<span class="comment">// Shuffle Algo </span>
+<span class="keyword">function</span> <span class="function">shuffle</span>(<span class="variable">arr</span>) {
+  <span class="comment">// Clone the original array so we don't modify it directly</span>
+  <span class="keyword">var</span> <span class="variable">copy</span> = <span class="variable">arr</span>.<span class="method">slice</span>(); <span class="comment">// .slice() with no params returns a copy of our array</span>
+
+  <span class="comment">// Loop backwards through the array </span>
+  <span class="keyword">for</span> (<span class="keyword">var</span> <span class="variable">i</span> = <span class="variable">copy</span>.<span class="property">length</span> - <span class="number">1</span>; <span class="variable">i</span> > <span class="number">0</span>; <span class="variable">i</span>--) {
+    <span class="comment">// Pick a random index j from 0 to i </span>
+    <span class="keyword">var</span> <span class="variable">j</span> = <span class="function">Math</span>.<span class="method">floor</span>(<span class="function">Math</span>.<span class="method">random</span>() * (<span class="variable">i</span> + <span class="number">1</span>));
+
+    <span class="comment">// Swap elements at positions i and j</span>
+    <span class="keyword">var</span> <span class="variable">temp</span> = <span class="variable">copy</span>[<span class="variable">i</span>];
+    <span class="variable">copy</span>[<span class="variable">i</span>] = <span class="variable">copy</span>[<span class="variable">j</span>];
+    <span class="variable">copy</span>[<span class="variable">j</span>] = <span class="variable">temp</span>;
+  }
+
+  <span class="comment">// Return the shuffled array</span>
+  <span class="keyword">return</span> <span class="variable">copy</span>;
+}
+<span class="comment">// Function written by Max's friend </span>
+
+
+<span class="keyword">function</span> <span class="function">createUI</span>() {
+<span class="comment">// Main container</span>
+<span class="function">write</span>(<span class="string">"&lt;div style='position:absolute; width:100%; height:100%; background-color:#121212; color:white; font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;'&gt;"</span>); <span class="comment">//Clean font with backups for an apple iphone like font</span>
+<span class="comment">// Header</span>
+<span class="function">write</span>(<span class="string">"&lt;div style='background-color:#1DB954; padding:8px; font-size:16px; font-weight:bold; text-align:center; box-shadow:0 2px 10px rgba(0,0,0,0.3);'&gt;Spotify Genre Shuffle&lt;/div&gt;"</span>);
+<span class="comment">// Controls container with flex layout</span>
+<span class="function">write</span>(<span class="string">"&lt;div style='display:flex; justify-content:space-between; align-items:center; padding:15px 20px; margin-top:10px; min-width: 100%;'&gt;"</span>);
+<span class="comment">// Left side: Dropdown and Shuffle button</span>
+   <span class="function">write</span>(<span class="string">"&lt;div style='display:flex; align-items:center;'&gt;"+
+            "&lt;select id='genreDropdown' style='padding:2px 12px; font-size:16px; background-color:#333; color:white; border:none; border-radius:4px;'&gt;&lt;/select&gt;"+
+            "&lt;button id='shuffleButton' style='background-color:#1DB954; color:black; margin-left:10px; padding:8px 15px; border:none; border-radius:4px; font-weight:bold; cursor:pointer; transition:background-color 0.2s;'&gt;Shuffle&lt;/button&gt;"+
+            "&lt;/div&gt;"</span>
+        ); <span class="comment">// Code.org auto closes elements with the write function so we had to combine this one</span>
+<span class="comment">// Right side: Reset button</span>
+<span class="function">write</span>(<span class="string">"&lt;button id='resetBtn' style='padding:8px 15px; background-color:#333; color:#fff; border:none; border-radius:4px; cursor:pointer; transition:background-color 0.2s;'&gt;Reset&lt;/button&gt;"</span>);
+<span class="function">write</span>(<span class="string">"&lt;/div&gt;"</span>);
+<span class="comment">// Track Container</span>
+<span class="function">write</span>(<span class="string">"&lt;div id='tracksContainer' style='margin-top:15px; padding:15px; overflow-y:scroll; height:350px; background-color:#181818; border-radius:5px;'&gt;&lt;/div&gt;"</span>);
+
+
+<span class="comment">// Close main container</span>
+<span class="function">write</span>(<span class="string">"&lt;/div&gt;"</span>);  <span class="comment">//this seems to work fine </span>
+
+  <span class="comment">// Populate Dropdown using innerHTML, code.org has limited functions to create a nice ui</span>
+  <span class="keyword">var</span> <span class="variable">genreOptions</span> = <span class="string">"&lt;option&gt;All Genres&lt;/option&gt;"</span>;
+  <span class="keyword">for</span> (<span class="keyword">var</span> <span class="variable">i</span> = <span class="number">0</span>; <span class="variable">i</span> < <span class="variable">genres</span>.<span class="property">length</span>; <span class="variable">i</span>++) {
+    <span class="variable">genreOptions</span> += <span class="string">"&lt;option&gt;"</span> + <span class="variable">genres</span>[<span class="variable">i</span>] + <span class="string">"&lt;/option&gt;"</span>;
+  }
+  <span class="comment">//Use code.orgs inner </span>
+  <span class="function">innerHTML</span>(<span class="string">"genreDropdown"</span>, <span class="variable">genreOptions</span>);
+
+
+  <span class="comment">// Event Handlers, the </span>
+  <span class="function">onEvent</span>(<span class="string">"genreDropdown"</span>, <span class="string">"change"</span>, <span class="keyword">function</span> () {
+    <span class="keyword">var</span> <span class="variable">selected</span> = <span class="function">getText</span>(<span class="string">"genreDropdown"</span>);
+    <span class="function">filterTracks</span>(<span class="variable">selected</span>);
+  });
+
+  <span class="function">onEvent</span>(<span class="string">"shuffleButton"</span>, <span class="string">"click"</span>, <span class="keyword">function</span> () {
+    <span class="variable">currentTracks</span> = <span class="function">shuffle</span>(<span class="variable">currentTracks</span>);
+    <span class="function">displayTracks</span>(<span class="variable">currentTracks</span>);
+  });
+
+  <span class="function">onEvent</span>(<span class="string">"resetBtn"</span>, <span class="string">"click"</span>, <span class="keyword">function</span> () {
+    <span class="comment">// Reset dropdown to "All Genres"</span>
+    <span class="function">setText</span>(<span class="string">"genreDropdown"</span>, <span class="string">"All Genres"</span>);
+    <span class="variable">currentTracks</span> = <span class="function">shuffle</span>(<span class="variable">tracks</span>);
+    <span class="function">displayTracks</span>(<span class="variable">currentTracks</span>);
+  });
+}
+
+<span class="comment">// Filter Tracks by Genre</span>
+<span class="keyword">function</span> <span class="function">filterTracks</span>(<span class="variable">genre</span>) {
+  <span class="keyword">if</span> (<span class="variable">genre</span> === <span class="string">"All Genres"</span>) {
+    <span class="variable">currentTracks</span> = <span class="function">shuffle</span>(<span class="variable">tracks</span>);
+  } <span class="keyword">else</span> {
+    <span class="variable">currentTracks</span> = <span class="function">shuffle</span>(<span class="variable">tracks</span>.<span class="method">filter</span>(<span class="keyword">function</span> (<span class="variable">t</span>) {
+      <span class="keyword">return</span> <span class="variable">t</span>.<span class="property">genre</span> === <span class="variable">genre</span>;
+    }));
+  }
+  <span class="function">displayTracks</span>(<span class="variable">currentTracks</span>);
+}
+
+<span class="comment">// Display Tracks in the Container</span>
+<span class="keyword">function</span> <span class="function">displayTracks</span>(<span class="variable">list</span>) {
+  <span class="keyword">var</span> <span class="variable">html</span> = <span class="string">""</span>;
+  <span class="keyword">for</span> (<span class="keyword">var</span> <span class="variable">i</span> = <span class="number">0</span>; <span class="variable">i</span> < <span class="variable">list</span>.<span class="property">length</span>; <span class="variable">i</span>++) {
+    <span class="keyword">var</span> <span class="variable">t</span> = <span class="variable">list</span>[<span class="variable">i</span>];
+    <span class="keyword">var</span> <span class="variable">bgColor</span> = (<span class="variable">i</span> % <span class="number">2</span> === <span class="number">0</span>) ? <span class="string">"#121212"</span> : <span class="string">"#181818"</span>; <span class="comment">// Even tracks are differnet color by getting the remainder</span>
+    <span class="variable">html</span> += <span class="string">"&lt;div style='background-color:"</span> + <span class="variable">bgColor</span> + <span class="string">"; padding:10px; border-bottom:1px solid #222;'&gt;"</span>;
+    <span class="variable">html</span> += <span class="string">"&lt;div style='font-size:16px; font-weight:bold; color:#fff;'&gt;#"</span> + <span class="variable">t</span>.<span class="property">position</span> + <span class="string">" "</span> + <span class="variable">t</span>.<span class="property">trackName</span> + <span class="string">"&lt;/div&gt;"</span>;
+    <span class="variable">html</span> += <span class="string">"&lt;div style='font-size:12px; color:#787878;'&gt;"</span> + <span class="variable">t</span>.<span class="property">artist</span> + <span class="string">" • "</span> + <span class="variable">t</span>.<span class="property">genre</span> + <span class="string">"&lt;/div&gt;"</span>;
+    <span class="variable">html</span> += <span class="string">"&lt;/div&gt;"</span>;
+  }
+  <span class="function">innerHTML</span>(<span class="string">"tracksContainer"</span>, <span class="variable">html</span>);
+}
+
+<span class="comment">// Start the app</span>
+<span class="function">createUI</span>();
+<span class="variable">currentTracks</span> = <span class="function">shuffle</span>(<span class="variable">tracks</span>);
+<span class="function">displayTracks</span>(<span class="variable">currentTracks</span>);
+                </code></pre>
+            </div>
+        </div>
+        
+        <div class="status-bar">
+            <div style="display: flex;">
+                <span class="status-item">Ln 143, Col 0</span>
+                <span class="status-item">Spaces: 2</span>
+            </div>
+            <div>
+                <span class="status-item">JavaScript</span>
+                <span class="status-item">UTF-8</span>
+            </div>
+        </div>
+    
+    <script>
+        // Just for line highlighting effect in the UI
+        document.querySelectorAll('code > span').forEach((line, index) => {
+            line.classList.add('line');
+            line.dataset.lineNumber = index + 1;
+        });
+    </script>
+</body>
+</html>
